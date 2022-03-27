@@ -37,13 +37,13 @@ def fecha_es_tupla(tupla):
     return True
 
 
-def bisiesto(tupla):
-    if not fecha_es_tupla(tupla):
+def bisiesto(anio):
+    if anio < 1582:
         return False
-    if tupla[0] % 100 > 0:
-        return (tupla[0] % 100) % 4 == 0
+    if anio % 100 > 0:
+        return (anio % 100) % 4 == 0
     else:
-        return (tupla[0]//100) % 4 == 0
+        return (anio//100) % 4 == 0
 
 
 def fecha_es_valida(tupla):
@@ -60,7 +60,7 @@ def fecha_es_valida(tupla):
         case Mes.FEBRERO.value:
             diasFebrero = fechas[Mes.FEBRERO.value]
             # Tomar el caso del año bisiesto
-            if bisiesto(tupla) == True:
+            if bisiesto(tupla[0]) == True:
                 diasFebrero += 1
             if tupla[2] <= diasFebrero:
                 return True
@@ -108,7 +108,7 @@ def dia_siguiente(tupla):
     # Asegurar que si es febrero y bisiesto, sumarle 1 mas al total de dias
     cantidadDias = fechas[tupla[1]]
     if tupla[1] == 2:
-        if bisiesto(tupla):
+        if bisiesto(tupla[0]):
             cantidadDias += 1
 
     if tupla[2] < cantidadDias:
@@ -127,7 +127,7 @@ def ordinal_dia(tupla):
         ordinal = tupla[2]
         for mes in range(tupla[1]):
             ordinal += fechas[mes]
-        if bisiesto(tupla) and tupla[1] > 2:
+        if bisiesto(tupla[0]) and tupla[1] > 2:
             ordinal += 1
         return ordinal
 
