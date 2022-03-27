@@ -5,6 +5,31 @@ from enum import Enum
 fechas = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
 
 
+class MesImpri:
+    def __init__(self, nombre, cantidadDias, diaSemana):
+        self.nombre = nombre
+        self.cantidadDias = cantidadDias
+        self.diaSemana = diaSemana
+        self.calendario = [[0]*7]*5
+        self.crearArreglo()
+
+    def crearArreglo(self):
+        arregloTemporal = []
+        for i in range(5):
+            arregloTemporal.append([0]*7)
+        diaActual = 1
+        dia = self.diaSemana
+        for semana in range(5):
+            #for dia in range(7):
+            while(dia < 7):
+                if(diaActual > self.cantidadDias):
+                    break
+                arregloTemporal[semana][dia] = diaActual
+                diaActual += 1
+                dia += 1
+            dia = 0
+        print(arregloTemporal)
+
 class Mes(Enum):
     ENERO = 1
     FEBRERO = 2
