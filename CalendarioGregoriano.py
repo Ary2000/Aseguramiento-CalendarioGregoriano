@@ -117,6 +117,17 @@ def dia_siguiente(tupla):
     else:
         return(tupla[0] + 1, 1, 1)
 
+def ordinal_dia(tupla):
+    if not fecha_es_valida(tupla):
+        return -1
+    else:
+        ordinal = tupla[2]
+        for mes in range(tupla[1]):
+            ordinal += fechas[mes]
+        if bisiesto(tupla) and tupla[1] > 2:
+            ordinal += 1
+        return ordinal
+
 
 if fecha_es_valida((2021, 2, 29)):
     print("Valido :)")
