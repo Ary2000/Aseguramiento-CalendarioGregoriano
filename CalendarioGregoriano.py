@@ -50,6 +50,8 @@ def fecha_es_valida(tupla):
     # Se retorna falso en caso de que la tupla no contenga el formato correcto
     if not fecha_es_tupla(tupla):
         return False
+    if tupla[0] <= 1582 and tupla[1] <= 10 and tupla[2] < 15:
+        return False
     # Match para separar los casos de cada mes
     match tupla[1]:
         case Mes.ENERO.value:
@@ -116,6 +118,7 @@ def dia_siguiente(tupla):
         return (tupla[0], tupla[1] + 1, 1)
     else:
         return(tupla[0] + 1, 1, 1)
+
 
 def ordinal_dia(tupla):
     if not fecha_es_valida(tupla):
