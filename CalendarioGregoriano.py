@@ -47,14 +47,17 @@ def bisiesto(tupla):
 
 
 def fecha_es_valida(tupla):
+    # Se retorna falso en caso de que la tupla no contenga el formato correcto
     if not fecha_es_tupla(tupla):
         return False
+    # Match para separar los casos de cada mes
     match tupla[1]:
         case Mes.ENERO.value:
             if tupla[2] <= fechas[Mes.ENERO.value]:
                 return True
         case Mes.FEBRERO.value:
             diasFebrero = fechas[Mes.FEBRERO.value]
+            # Tomar el caso del año bisiesto
             if bisiesto(tupla) == True:
                 diasFebrero += 1
             if tupla[2] <= diasFebrero:
@@ -89,9 +92,30 @@ def fecha_es_valida(tupla):
         case Mes.DICIEMBRE.value:
             if tupla[2] <= fechas[Mes.DICIEMBRE.value]:
                 return True
+        # En caso que se hubiera usado un número de mes que no existe en el calendario gregoriano
         case _:
             return False
     return False
+
+
+def dia_siguiente(tupla):
+    # Revisar si la fecha es valida
+    if not fecha_es_valida(tupla):
+        return False
+
+    # Asegurar que si es febrero y bisiesto, sumarle 1 mas al total de dias
+    cantidadDias = fechas[tupla[1]]
+    if tupla[1] == 2:
+        if bisiesto(tupla):
+            cantidadDias += 1
+
+    if tupla[2] < cantidadDias:
+        return (tupla[0], tupla[1], tupla[2] + 1)
+
+    elif tupla[1] < 12:
+        return (tupla[0], tupla[1] + 1, 1)
+    else:
+        return(tupla[0] + 1, 1, 1)
 
 
 if fecha_es_valida((2021, 2, 29)):
