@@ -30,7 +30,7 @@ class MesImpri:
             # for dia in range(7):
             while(dia < 7):
                 if(diaActual > self.cantidadDias):
-                    if(self.numeroMes != 2 or not self.esBisiesto or diaActual > 29):
+                    if not(self.numeroMes == 2 and self.esBisiesto and diaActual <= 29):
                         break
                 arregloTemporal[semana][dia] = diaActual
                 diaActual += 1
@@ -89,44 +89,44 @@ def fecha_es_valida(tupla):
     # Match para separar los casos de cada mes
     match tupla[1]:
         case Mes.ENERO.value:
-            if tupla[2] <= fechas[Mes.ENERO.value]:
+            if tupla[2] <= fechas[Mes.ENERO.value - 1]:
                 return True
         case Mes.FEBRERO.value:
-            diasFebrero = fechas[Mes.FEBRERO.value]
+            diasFebrero = fechas[Mes.FEBRERO.value - 1]
             # Tomar el caso del año bisiesto
             if bisiesto(tupla[0]) == True:
                 diasFebrero += 1
             if tupla[2] <= diasFebrero:
                 return True
         case Mes.MARZO.value:
-            if tupla[2] <= fechas[Mes.MARZO.value]:
+            if tupla[2] <= fechas[Mes.MARZO.value - 1]:
                 return True
         case Mes.ABRIL.value:
-            if tupla[2] <= fechas[Mes.ABRIL.value]:
+            if tupla[2] <= fechas[Mes.ABRIL.value - 1]:
                 return True
         case Mes.MAYO.value:
-            if tupla[2] <= fechas[Mes.MAYO.value]:
+            if tupla[2] <= fechas[Mes.MAYO.value - 1]:
                 return True
         case Mes.JUNIO.value:
-            if tupla[2] <= fechas[Mes.JUNIO.value]:
+            if tupla[2] <= fechas[Mes.JUNIO.value - 1]:
                 return True
         case Mes.JULIO.value:
-            if tupla[2] <= fechas[Mes.JULIO.value]:
+            if tupla[2] <= fechas[Mes.JULIO.value - 1]:
                 return True
         case Mes.AGOSTO.value:
-            if tupla[2] <= fechas[Mes.AGOSTO.value]:
+            if tupla[2] <= fechas[Mes.AGOSTO.value - 1]:
                 return True
         case Mes.SETIEMBRE.value:
-            if tupla[2] <= fechas[Mes.SETIEMBRE.value]:
+            if tupla[2] <= fechas[Mes.SETIEMBRE.value - 1]:
                 return True
         case Mes.OCTUBRE.value:
-            if tupla[2] <= fechas[Mes.OCTUBRE.value]:
+            if tupla[2] <= fechas[Mes.OCTUBRE.value - 1]:
                 return True
         case Mes.NOVIEMBRE.value:
-            if tupla[2] <= fechas[Mes.NOVIEMBRE.value]:
+            if tupla[2] <= fechas[Mes.NOVIEMBRE.value - 1]:
                 return True
         case Mes.DICIEMBRE.value:
-            if tupla[2] <= fechas[Mes.DICIEMBRE.value]:
+            if tupla[2] <= fechas[Mes.DICIEMBRE.value - 1]:
                 return True
         # En caso que se hubiera usado un número de mes que no existe en el calendario gregoriano
         case _:
@@ -140,7 +140,7 @@ def dia_siguiente(tupla):
         return False
 
     # Asegurar que si es febrero y bisiesto, sumarle 1 mas al total de dias
-    cantidadDias = fechas[tupla[1]]
+    cantidadDias = fechas[tupla[1] - 1]
     if tupla[1] == 2:
         if bisiesto(tupla[0]):
             cantidadDias += 1
@@ -159,7 +159,7 @@ def ordinal_dia(tupla):
         return -1
     else:
         ordinal = tupla[2]
-        for mes in range(tupla[1]):
+        for mes in range(tupla[1] - 1):
             ordinal += fechas[mes]
         if bisiesto(tupla[0]) and tupla[1] > 2:
             ordinal += 1
@@ -172,9 +172,14 @@ def obtenerDiaSemana(tupla):
     c = tupla[0] % 100
     d = c // 4
     suma = (a + b + c + d)
-    if bisiesto:
+    if (tupla[1] == 1 or tupla[1] == 2) and bisiesto(tupla[0]):
         suma -= 1
-    return suma % 7
+    respuesta = suma % 7
+    if tupla[0] >= 2000:
+        respuesta -= 1
+    if respuesta < 0:
+        respuesta = 6
+    return respuesta
 
 
 def imprimir_3x4(anno):
@@ -218,4 +223,4 @@ def imprimir_3x4(anno):
         contadorMeses += 1
 
 
-imprimir_3x4(2020)
+imprimir_3x4(2022)
