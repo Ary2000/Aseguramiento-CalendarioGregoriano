@@ -2,33 +2,42 @@ from operator import truediv
 from enum import Enum
 
 
-fechas = [0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+fechas = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+codigodMes = [0, 3, 3, 6, 1, 4, 6, 2, 5, 0, 3, 5]
+
+headersMeses = ["          Enero             |            Febrebro          |            Marzo             |             Abril            |",
+                "          Mayo              |             Junio            |            Julio             |             Agosto           |",
+                "        Setiembre           |            Octubre           |           Noviembre          |           Diciembre          |"
+                ]
 
 
 class MesImpri:
-    def __init__(self, nombre, cantidadDias, diaSemana):
-        self.nombre = nombre
+    def __init__(self, numeroMes, cantidadDias, diaSemana, esBisiesto):
+        self.numeroMes = numeroMes
         self.cantidadDias = cantidadDias
         self.diaSemana = diaSemana
-        self.calendario = [[0]*7]*5
+        self.calendario = []
+        self.esBisiesto = esBisiesto
         self.crearArreglo()
 
     def crearArreglo(self):
         arregloTemporal = []
-        for i in range(5):
+        for i in range(6):
             arregloTemporal.append([0]*7)
         diaActual = 1
         dia = self.diaSemana
-        for semana in range(5):
-            #for dia in range(7):
+        for semana in range(6):
+            # for dia in range(7):
             while(dia < 7):
                 if(diaActual > self.cantidadDias):
-                    break
+                    if(self.numeroMes != 2 or not self.esBisiesto or diaActual > 29):
+                        break
                 arregloTemporal[semana][dia] = diaActual
                 diaActual += 1
                 dia += 1
             dia = 0
-        print(arregloTemporal)
+        self.calendario = arregloTemporal
+
 
 class Mes(Enum):
     ENERO = 1
@@ -157,7 +166,56 @@ def ordinal_dia(tupla):
         return ordinal
 
 
-if fecha_es_valida((2021, 2, 29)):
-    print("Valido :)")
-else:
-    print("No valido :(")
+def obtenerDiaSemana(tupla):
+    a = tupla[2]
+    b = codigodMes[tupla[1] - 1]
+    c = tupla[0] % 100
+    d = c // 4
+    suma = (a + b + c + d)
+    if bisiesto:
+        suma -= 1
+    return suma % 7
+
+
+def imprimir_3x4(anno):
+    # Crear lista con todos los meses dentro
+    todosMeses = [
+        MesImpri(1, fechas[0], obtenerDiaSemana((anno, 1, 1)), False),
+        MesImpri(2, fechas[1], obtenerDiaSemana((anno, 2, 1)), bisiesto(anno)),
+        MesImpri(3, fechas[2], obtenerDiaSemana((anno, 3, 1)), False),
+        MesImpri(4, fechas[3], obtenerDiaSemana((anno, 4, 1)), False),
+        MesImpri(5, fechas[4], obtenerDiaSemana((anno, 5, 1)), False),
+        MesImpri(6, fechas[5], obtenerDiaSemana((anno, 6, 1)), False),
+        MesImpri(7, fechas[6], obtenerDiaSemana((anno, 7, 1)), False),
+        MesImpri(8, fechas[7], obtenerDiaSemana((anno, 8, 1)), False),
+        MesImpri(9, fechas[8], obtenerDiaSemana((anno, 9, 1)), False),
+        MesImpri(10, fechas[9], obtenerDiaSemana((anno, 10, 1)), False),
+        MesImpri(11, fechas[10], obtenerDiaSemana((anno, 11, 1)), False),
+        MesImpri(12, fechas[11], obtenerDiaSemana((anno, 12, 1)), False)
+    ]
+
+    # Para el header de los nombres de los meses
+    contadorMeses = 0
+    for numMes in range(0, 12, 4):
+        print(headersMeses[contadorMeses])
+        print("D   L   K   M   J   V   S   |  D   L   K   M   J   V   S   |  D   L   K   M   J   V   S   |  D   L   K   M   J   V   S   |")
+        for semana in range(6):
+            lineaCalendario = [todosMeses[numMes].calendario[semana], todosMeses[numMes + 1].calendario[semana],
+                               todosMeses[numMes + 2].calendario[semana], todosMeses[numMes + 3].calendario[semana]]
+            # Ciclo para imprimir toda la tanda de meses
+            for semanaMes in lineaCalendario:
+                # Ciclo para imprimir la linea
+                for diaSemana in semanaMes:
+                    if(diaSemana < 10):
+                        if(diaSemana == 0):
+                            print("    ", end="")
+                        else:
+                            print(diaSemana, "  ", end="")
+                    else:
+                        print(diaSemana, " ", end="")
+                print("|  ", end="")
+            print("")
+        contadorMeses += 1
+
+
+imprimir_3x4(2020)
