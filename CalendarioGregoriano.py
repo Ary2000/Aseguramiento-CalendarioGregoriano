@@ -1,5 +1,6 @@
 from operator import truediv
 from enum import Enum
+from datetime import date
 
 
 fechas = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -166,7 +167,7 @@ def ordinal_dia(tupla):
         return ordinal
 
 
-def obtenerDiaSemana(tupla):
+def dia_semana(tupla):
     a = tupla[2]
     b = codigodMes[tupla[1] - 1]
     c = tupla[0] % 100
@@ -175,28 +176,39 @@ def obtenerDiaSemana(tupla):
     if (tupla[1] == 1 or tupla[1] == 2) and bisiesto(tupla[0]):
         suma -= 1
     respuesta = suma % 7
-    if tupla[0] >= 2000:
-        respuesta -= 1
-    if respuesta < 0:
-        respuesta = 6
+    # if tupla[0] >= 2000:
+    #    respuesta -= 1
+    match((tupla[0] // 100) % 4):
+        case 3:
+            pass
+        case 0:
+            respuesta -= 1
+        case 1:
+            respuesta -= 3
+        case 2:
+            respuesta -= 5
+    if(respuesta < 0):
+        respuesta += 7
+    # if respuesta < 0:
+    #    respuesta = 6
     return respuesta
 
 
 def imprimir_3x4(anno):
     # Crear lista con todos los meses dentro
     todosMeses = [
-        MesImpri(1, fechas[0], obtenerDiaSemana((anno, 1, 1)), False),
-        MesImpri(2, fechas[1], obtenerDiaSemana((anno, 2, 1)), bisiesto(anno)),
-        MesImpri(3, fechas[2], obtenerDiaSemana((anno, 3, 1)), False),
-        MesImpri(4, fechas[3], obtenerDiaSemana((anno, 4, 1)), False),
-        MesImpri(5, fechas[4], obtenerDiaSemana((anno, 5, 1)), False),
-        MesImpri(6, fechas[5], obtenerDiaSemana((anno, 6, 1)), False),
-        MesImpri(7, fechas[6], obtenerDiaSemana((anno, 7, 1)), False),
-        MesImpri(8, fechas[7], obtenerDiaSemana((anno, 8, 1)), False),
-        MesImpri(9, fechas[8], obtenerDiaSemana((anno, 9, 1)), False),
-        MesImpri(10, fechas[9], obtenerDiaSemana((anno, 10, 1)), False),
-        MesImpri(11, fechas[10], obtenerDiaSemana((anno, 11, 1)), False),
-        MesImpri(12, fechas[11], obtenerDiaSemana((anno, 12, 1)), False)
+        MesImpri(1, fechas[0], dia_semana((anno, 1, 1)), False),
+        MesImpri(2, fechas[1], dia_semana((anno, 2, 1)), bisiesto(anno)),
+        MesImpri(3, fechas[2], dia_semana((anno, 3, 1)), False),
+        MesImpri(4, fechas[3], dia_semana((anno, 4, 1)), False),
+        MesImpri(5, fechas[4], dia_semana((anno, 5, 1)), False),
+        MesImpri(6, fechas[5], dia_semana((anno, 6, 1)), False),
+        MesImpri(7, fechas[6], dia_semana((anno, 7, 1)), False),
+        MesImpri(8, fechas[7], dia_semana((anno, 8, 1)), False),
+        MesImpri(9, fechas[8], dia_semana((anno, 9, 1)), False),
+        MesImpri(10, fechas[9], dia_semana((anno, 10, 1)), False),
+        MesImpri(11, fechas[10], dia_semana((anno, 11, 1)), False),
+        MesImpri(12, fechas[11], dia_semana((anno, 12, 1)), False)
     ]
 
     # Para el header de los nombres de los meses
@@ -222,5 +234,33 @@ def imprimir_3x4(anno):
             print("")
         contadorMeses += 1
 
+# Funcion que se encarga de conseguir la fecha que seria la que se encuentre en la tupla + los dias insertados porr diasPasar
 
-imprimir_3x4(2022)
+
+def fecha_futura(tupla, diasPasar):
+    # Cantidad de dias presentados en la tupla
+    if not fecha_es_valida(tupla):
+        return -1
+    diasPasar += tupla[2] - 1
+    tupla = (tupla[0], tupla[1], 1)
+    while diasPasar > 0:
+        cantidadDias = fechas[tupla[1] - 1]
+        if tupla[1] == 2 and bisiesto(tupla[0]):
+            cantidadDias += 1
+        if(cantidadDias > diasPasar):
+            tupla = (tupla[0], tupla[1], tupla[2] + diasPasar)
+            return tupla
+        diasPasar -= cantidadDias
+        tupla = (tupla[0], tupla[1] + 1, 1)
+        if tupla[1] > 12:
+            tupla = (tupla[0] + 1, 1, 1)
+    return tupla
+
+
+def fecha_hoy():
+    hoy = date.today().strftime("%d,%m,%Y")
+    hoy = hoy.split(",")
+    return (int(hoy[2]), int(hoy[1]), int(hoy[0]))
+
+
+fecha_hoy()
