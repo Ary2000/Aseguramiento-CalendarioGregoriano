@@ -322,5 +322,9 @@ def fecha_hoy():
     hoy = hoy.split(",")
     return (int(hoy[2]), int(hoy[1]), int(hoy[0]))
 
+def edad_hoy(fechaNacimiento):
+    if not fecha_es_valida(fechaNacimiento):
+        return (0,0,0)
+    return edad_al(fechaNacimiento, fecha_hoy())
 
 fecha_hoy()
