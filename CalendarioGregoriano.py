@@ -168,6 +168,8 @@ def ordinal_dia(tupla):
 
 
 def dia_semana(tupla):
+    if not fecha_es_valida(tupla):
+        return -1
     a = tupla[2]
     b = codigodMes[tupla[1] - 1]
     c = tupla[0] % 100
@@ -256,7 +258,8 @@ def fecha_futura(tupla, diasPasar):
             tupla = (tupla[0] + 1, 1, 1)
     return tupla
 
-def dias_entre(tupla1,tupla2):
+
+def dias_entre(tupla1, tupla2):
     dias = 0
     if not fecha_es_valida(tupla1) or not fecha_es_valida(tupla2):
         dias = -1
@@ -264,37 +267,38 @@ def dias_entre(tupla1,tupla2):
         ordinal1 = ordinal_dia(tupla1)
         ordinal2 = ordinal_dia(tupla2)
         dias = ordinal1 - ordinal2
-        if dias<0:
+        if dias < 0:
             dias = dias*(-1)
     else:
-        tuplaMenor = (0,0,0)
-        tuplaMayor = (0,0,0)
+        tuplaMenor = (0, 0, 0)
+        tuplaMayor = (0, 0, 0)
         anioActual = 0
         if tupla1[0] < tupla2[0]:
             tuplaMenor = tupla1
             tuplaMayor = tupla2
             anioActual = tupla1[0]
         else:
-            tuplaMenor =  tupla2
+            tuplaMenor = tupla2
             tuplaMayor = tupla1
             anioActual = tupla2[0]
-        dias = dias_entre(tuplaMenor,(anioActual,12,31))
+        dias = dias_entre(tuplaMenor, (anioActual, 12, 31))
         anioActual += 1
         while(anioActual < tuplaMayor[0]):
             dias += 365
             if bisiesto(anioActual):
-                dias +=1
+                dias += 1
             anioActual += 1
         dias += ordinal_dia(tuplaMayor)
     return dias
 
+
 def edad_al(fechaNacimiento, fecha):
     if not fecha_es_valida(fechaNacimiento) or not fecha_es_valida(fecha):
-        return (0,0,0)
+        return (0, 0, 0)
     elif fechaNacimiento[0] > fecha[0]:
-        return (0,0,0)
+        return (0, 0, 0)
     elif fechaNacimiento[0] == fecha[0] and fechaNacimiento[1] >= fecha[1] and fechaNacimiento[2] >= fecha[2]:
-        return (0,0,0)
+        return (0, 0, 0)
     anio = fecha[0] - fechaNacimiento[0]
     mes = 0
     dia = 0
@@ -303,28 +307,33 @@ def edad_al(fechaNacimiento, fecha):
         dia = fecha[2] - fechaNacimiento[2]
     elif fechaNacimiento[1] < fecha[1] and fechaNacimiento[2] > fecha[2]:
         mes = fecha[1] - fechaNacimiento[1] - 1
-        dia = fechas[fechaNacimiento[1]] + (fecha[2] - fechaNacimiento[2])
+        dia = fechas[fecha[1]] + (fecha[2] - fechaNacimiento[2])
     elif fechaNacimiento[1] >= fecha[1]:
         anio -= 1
         mes = 12 + (fecha[1] - fechaNacimiento[1])
         if fechaNacimiento[2] > fecha[2]:
             mes -= 1
-            dia = fechas[fechaNacimiento[1]] + (fecha[2] - fechaNacimiento[2])
+            dia = fechas[fecha[1]] + (fecha[2] - fechaNacimiento[2])
         else:
             dia = fecha[2] - fechaNacimiento[2]
     elif fechaNacimiento[2] > fecha[2]:
         anio -= 1
-        dia = fechas[fechaNacimiento[1]] + (fecha[2] - fechaNacimiento[2])
-    return (anio,mes,dia)
+        dia = fechas[fecha[1]] + (fecha[2] - fechaNacimiento[2])
+    if bisiesto(fecha[0]) and 2 < fecha[1] < fechaNacimiento[1]:
+        dia = dia + 1
+    return (anio, mes, dia)
+
 
 def fecha_hoy():
     hoy = date.today().strftime("%d,%m,%Y")
     hoy = hoy.split(",")
     return (int(hoy[2]), int(hoy[1]), int(hoy[0]))
 
+
 def edad_hoy(fechaNacimiento):
     if not fecha_es_valida(fechaNacimiento):
-        return (0,0,0)
+        return (0, 0, 0)
     return edad_al(fechaNacimiento, fecha_hoy())
 
-fecha_hoy()
+
+edad_al((1957, 10, 25), (2022, 4, 6))
